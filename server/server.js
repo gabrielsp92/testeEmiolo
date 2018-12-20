@@ -6,20 +6,16 @@ var {User} = require ('./models/user');
 
 
 var app = express();
-
 app.use(bodyParser.json());
 
 //CREATE user route
 app.post('/user',(req,res) => {
-  
     var user = new User({
         name: req.body.name,
         age: req.body.age,
         login: req.body.login,
         pass: req.body.pass
     });
-
-    console.log(user.pass);
 
     user.save().then((doc) => {
         console.log(doc);
@@ -33,6 +29,16 @@ app.post('/user',(req,res) => {
 app.listen(3000, () => {
     console.log('Started on port 3000');
 });
+
+app.get('/user', (req,res) => {
+    User.find().then((users) => {
+        res.send({users});  //send user as object instead of array
+    }),(e) => {
+        res.status(400).send(e);
+    }
+});
+
+
 
 module.exports = {app};
 //app: app
