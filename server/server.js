@@ -26,10 +26,7 @@ app.post('/user',(req,res) => {
     });
 });
 
-app.listen(3000, () => {
-    console.log('Started on port 3000');
-});
-
+//FETCH ALL users
 app.get('/user', (req,res) => {
     User.find().then((users) => {
         res.send({users});  //send user as object instead of array
@@ -39,6 +36,10 @@ app.get('/user', (req,res) => {
 });
 
 
+
+app.listen(3000, () => {
+    console.log('Started on port 3000');
+});
 
 module.exports = {app};
 //app: app
