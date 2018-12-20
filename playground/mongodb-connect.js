@@ -32,12 +32,49 @@ MongoClient.connect('mongodb://localhost:27017/teste-emiolo', (err,client) => {
     //     console.log('Unable to fetch users ', err);
     // }
 
-    //Count
-    db.collection('Users').find().count().then((count) => {
-        console.log('Users: ', count);
-    }), (err) => {
-        console.log('Unable to fetch users ', err);
-    }
+    // //Count
+    // db.collection('Users').find().count().then((count) => {
+    //     console.log('Users: ', count);
+    // }), (err) => {
+    //     console.log('Unable to fetch users ', err);
+    // }
 
-  //  client.close();
+    // //DELETE MANY
+    // db.collection('Users').deleteMany({
+    //     age:26
+    // }).then((result)=>{
+    //     console.log(result)
+    // },(err) => {
+    //     console.log(err)
+    // })
+
+    // //DELETE ONE
+    // db.collection('Users').deleteOne({
+    //     age:26
+    // }).then((result)=>{
+    //     console.log(result);
+    // });
+
+    // // FIND ONE AND DELETE
+    // db.collection('Users').findOneAndDelete({
+    //     age:26
+    // }).then((results)=>{
+
+    // })
+
+    //FIND ONE AND UPDATE (update operators)
+    db.collection('Users').findOneAndUpdate({
+        _id: new ObjectID('5c1b9cdb057be0115efd6e29')
+    }, {                    
+        $set:{
+            age: 24
+        }
+    }, {
+        returnOriginal: false
+    }).then((result)=>{
+        console.log(result);
+    })
+
+    client.close();
+
 });
