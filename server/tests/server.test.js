@@ -1,16 +1,19 @@
 const expect = require('expect');
 const request = require('supertest');
+const {ObjectID} = require('mongodb');
 
 const {app} = require('./../server');
 const {User} = require('./../models/user');
 
 //seed
 const users = [{
+    __id: new ObjectID(),
     name: 'gabriel',
     age: 24,
     login: 'gsoaresp92',
     pass: 'gab123',
 },{
+    __id: new ObjectID(),
     name: 'angelo',
     age: 31,
     login: 'angel',
@@ -88,7 +91,7 @@ describe('POST /user', () => {
 
 //test GET /user
 describe('GET /user', () => {
-    it('get all users', (done) => {       
+    it('should get all users', (done) => {       
 
         request(app)
             .get('/user')
@@ -108,3 +111,33 @@ describe('GET /user', () => {
     });
 });
 
+// //test GET /user/:id
+// not working
+// describe('GET /user/:id',() =>{
+//     it('should return user by id', (done) => {
+//         request(app)
+//             .get(`/user/${users[0].__id}`)
+//             .expect(200)
+//             .expect((res) => {
+//                 expect(users[0].__id).toBe(users[0]);
+//                 expect(res.body.user.name).toBe(users[0].name);
+//             })
+//             .end(done);
+//     });
+
+
+//     it('should return 404 if todo not found', (done) => {
+//         var hexId = new ObjectID().toHexString();
+
+//         request(app)
+//             .get(`/user/${hexId}`)
+//             .expect(404)
+//             .end(done);
+//     });
+//     it('should return 404 for non-object ids', (done) => {
+//         request(app)
+//         .get(`/user/123`)
+//         .expect(404)
+//         .end(done);
+//     });
+// });
