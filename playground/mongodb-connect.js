@@ -63,17 +63,17 @@ MongoClient.connect('mongodb://localhost:27017/teste-emiolo', (err,client) => {
     // })
 
     //FIND ONE AND UPDATE (update operators)
-    db.collection('Users').findOneAndUpdate({
-        _id: new ObjectID('5c1b9cdb057be0115efd6e29')
-    }, {                    
-        $set:{
-            age: 24
-        }
-    }, {
-        returnOriginal: false
-    }).then((result)=>{
-        console.log(result);
-    })
+    // db.collection('Users').findOneAndUpdate({
+    //     _id: new ObjectID('5c1b9cdb057be0115efd6e29')
+    // }, {                    
+    //     $set:{
+    //         age: 24
+    //     }
+    // }, {
+    //     returnOriginal: false
+    // }).then((result)=>{
+    //     console.log(result);
+    // })
 
     client.close();
 

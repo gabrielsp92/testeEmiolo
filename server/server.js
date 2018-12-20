@@ -9,14 +9,17 @@ var app = express();
 
 app.use(bodyParser.json());
 
-//create user endpoint
+//CREATE user route
 app.post('/user',(req,res) => {
+  
     var user = new User({
         name: req.body.name,
         age: req.body.age,
         login: req.body.login,
         pass: req.body.pass
     });
+
+    console.log(user.pass);
 
     user.save().then((doc) => {
         console.log(doc);
@@ -30,3 +33,6 @@ app.post('/user',(req,res) => {
 app.listen(3000, () => {
     console.log('Started on port 3000');
 });
+
+module.exports = {app};
+//app: app
