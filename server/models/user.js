@@ -38,16 +38,20 @@ var UserSchema = new mongoose.Schema({
     }]
 });
 
+//override method
+//defines what will be sent back when a mongoose model is converted to json
 UserSchema.methods.toJSON = function() {
     var user = this;
+    // converts mongoose model to simple object
     var userObject = user.toObject();
-
+    //uses lodash to pick attributes to be shown in json res.
     return _.pick(userObject, ['_id', 'email','name']);
 };
 
 UserSchema.methods.generateAuthToken = function() {
     var user = this;
     var access = 'auth';
+    //generate token with secret key "abc123"
     var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();
 
     //push to object`s token array
@@ -62,28 +66,26 @@ UserSchema.methods.generateAuthToken = function() {
     });
 };
 
+//static method that gets user by token
 UserSchema.statics.findByToken = function (token) {
-    var user = this;
+    var User = this;
     var decoded;
 
-    
 
     try {
         decoded = jwt.verify(token, 'abc123');
-
-        console.log(decoded);
     } catch (e) {
-        // return new Promise((resolve, reject) => {
-        //     reject();
-        // })
         return Promise.reject();
     }
 
-    return user.findOne({
-        _id: decoded._id,
+    //query nested object
+    return User.findOne({
+        '_id': decoded._id,
         'tokens.token': token,
         'tokens.access': 'auth'
     });
+
+
 };
 
 var User = mongoose.model('User', UserSchema);

@@ -5,6 +5,7 @@ var _ = require('lodash');
 
 var {mongoose} = require('./db/mongoose');
 var {User} = require ('./models/user');
+var {authenticate} = require('./middleware/authenticate');
 
 
 var app = express();
@@ -37,13 +38,16 @@ app.get('/user', (req,res) => {
 //Log in user route 
 app.post('/signin',(req,res) => {
     var email = req.body.email;
-    var pass = req.body.pass;
+    var password = req.body.password;
 
-    User.findOne({email,pass}).then((doc) => {
-        if(!doc){
+
+    User.findOne({email,password}).then((user) => {
+        if(!user){
             res.status(401).send();
         }
-        user = new User(doc);
+        user = new User(user);
+
+        
 
         return user.generateAuthToken()
     }).then((token) => {
@@ -76,37 +80,10 @@ app.get('/user/:id', (req,res) => {
 
 });
 
-//auth middleware
-var authenticate = (req, res, next) => {
-    var token = req.header('auth');
 
-
-    User.findByToken(token).then((user) => {
-        if (!user) {
-            return Promise.reject();
-        }
-
-        req.user = user;
-        req.token = token;
-
-        next();
-    }).catch((e) => {
-        res.status(401).send();
-    });
-};
-
-//GET /me 
+//GET /me  
 app.get('/me', authenticate, (req,res) => {
-    var token = req.header('x-auth');
-
-    User.findByToken(token).then((user) => {
-        if (!user) {
-            return Promise.reject();
-        }
-        res.send(user);
-    }).catch((e) => {
-        res.status(401).send();
-    });
+    res.send(req.user);
 });
 
 
