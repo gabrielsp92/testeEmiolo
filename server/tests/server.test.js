@@ -10,13 +10,13 @@ const users = [{
     __id: new ObjectID(),
     name: 'gabriel',
     age: 24,
-    login: 'gsoaresp92',
+    email: 'gsoaresp92',
     pass: 'gab123',
 },{
     __id: new ObjectID(),
     name: 'angelo',
     age: 31,
-    login: 'angel',
+    email: 'angel',
     pass: 'jujuba',
 }];
 
@@ -36,19 +36,19 @@ describe('POST /user', () => {
         
         var name = "User Test";
         var age = 13;
-        var login = "logtest";
+        var email = "logtest";
         var pass = "test";
 
         request(app)
             .post('/user')
             .send({
-               name,age,login,pass
+               name,age,email,pass
             })
             .expect(200)
             .expect((res) => {
                 expect(res.body.name).toBe(name);
                 expect(res.body.age).toBe(age);
-                expect(res.body.login).toBe(login);
+                expect(res.body.email).toBe(email);
                 expect(res.body.pass).toBe(pass);
 
             })
@@ -61,7 +61,7 @@ describe('POST /user', () => {
                     expect(users.length).toBe(1);
                     expect(users[0].name).toBe(name);
                     expect(users[0].age).toBe(age);
-                    expect(users[0].login).toBe(login);
+                    expect(users[0].email).toBe(email);
                     expect(users[0].pass).toBe(pass);
                     done();
                 }).catch((e) => done(e));
