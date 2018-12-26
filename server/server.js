@@ -7,6 +7,9 @@ var {mongoose} = require('./db/mongoose');
 var {User} = require ('./models/user');
 var {authenticate} = require('./middleware/authenticate');
 
+//removing DeprecationWarning
+mongoose.set('useCreateIndex', true);
+
 
 var app = express();
 app.use(bodyParser.json());
@@ -36,26 +39,17 @@ app.get('/user', (req,res) => {
 });
 
 //Log in user route 
-app.post('/signin',(req,res) => {
-    var email = req.body.email;
-    var password = req.body.password;
+app.post('/user/login',(req,res) => {
+    var body = _.pick(req.body,['email','password']);
 
-
-    User.findOne({email,password}).then((user) => {
-        if(!user){
-            res.status(401).send();
-        }
-        user = new User(user);
-
-        
-
-        return user.generateAuthToken()
-    }).then((token) => {
-        res.header('x-auth', token).send({user});
-    }).catch ((err) => {
-        console.log(err);
+    User.findByCredentials(body.email, body.password).then((user) => {
+        user.generateAuthToken().then((token) => {
+            res.header('x-auth',token).send(user);
+        });
+    }).catch((err) => {
+        res.status(401).send();
     })
-})
+});
 
 
 //Get user by id route
