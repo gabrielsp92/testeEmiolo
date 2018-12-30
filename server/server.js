@@ -7,6 +7,7 @@ var {mongoose} = require('./db/mongoose');
 var {User} = require ('./models/user');
 var {authenticate} = require('./middleware/authenticate');
 
+
 //removing DeprecationWarning.
 mongoose.set('useCreateIndex', true);
 
@@ -14,10 +15,19 @@ mongoose.set('useCreateIndex', true);
 var app = express();
 app.use(bodyParser.json());
 
+app.use(function(req,res,next) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE");
+    res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, x-auth,authentication,Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+    res.setHeader("Access-Control-Expose-Headers", "x-auth");
+    next(); 
+});
+
 //CREATE user route.
 app.post('/user',(req,res) => {
     var body = _.pick(req.body,['name','email','password']);
-    var user = new User(body);
+    var user = new User(req.body);
 
     user.save().then(() => {
         return user.generateAuthToken();
@@ -30,7 +40,7 @@ app.post('/user',(req,res) => {
 });
 
 //GET ALL users route.
-app.get('/user', (req,res) => {
+app.get('/user', authenticate, (req,res) => {
     User.find().then((users) => {
         res.send({users});  //send user as object instead of array
     }),(e) => {
